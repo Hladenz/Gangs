@@ -1,0 +1,17 @@
+name: Gangs
+version: ${project.version}
+main: crystallizedprison.xyz.gangs.Gangs
+api-version: 1.13
+authors: [Hladenz]
+description: Offical Gangs plugin for Crystallzied Prison Minecraft Server
+website: twitch.tv/Hladenz
+commands:
+  gangs:
+    description: The Global Command Command Mainly for Admins
+  gang:
+    description: Player Sided Commands
+  gangchat:
+    description: GangChat
+    aliases:
+      - gc
+

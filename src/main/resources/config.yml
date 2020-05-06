@@ -1,0 +1,7 @@
+upgrades:
+  members:
+    cost: 1000000
+    scaleable: true
+  ws:
+    cost: 1500000
+    scaleable: false
