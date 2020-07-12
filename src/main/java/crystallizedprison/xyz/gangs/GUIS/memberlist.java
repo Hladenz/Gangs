@@ -30,7 +30,7 @@ public class memberlist {
     }
 
     public static void Open(Gangs main, Player p){
-        Inventory inv = Bukkit.createInventory(null, 54, ChatColor.DARK_AQUA + "Clans - Member List");
+        Inventory inv = Bukkit.createInventory(null, 54, ChatColor.DARK_AQUA + "Gangs - Member List");
         Gang gang = main.GetMember(p).getGang();
 
         List<ItemStack> invitems = new ArrayList<>();

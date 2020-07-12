@@ -57,16 +57,12 @@ public class gangs implements CommandExecutor {
                     Gang gang = main.GetGangByName(String.join(" ",name));
 
                     Member member = main.GetMember(p);
-                    if (member.getGang() != null){
-                        p.sendMessage(ChatColor.AQUA + "You must not be in a gang to Join a Gang, Please Leave your Current Gang(/gang Leave)!");
-                        return true;
-                    }
 
                     member.setGang(gang);
                     main.SaveMember(member);
 
                     p.sendMessage(ChatColor.DARK_AQUA + "You have successfully Joined " + ChatColor.AQUA + gang.getName());
-                    gang.SendMessageToClan(ChatColor.AQUA + p.getName() + ChatColor.DARK_AQUA +" Has Joined the Clan");
+                    gang.SendMessageToGang(ChatColor.AQUA + p.getName() + ChatColor.DARK_AQUA +" Has Joined the Gang",main);
                     gang.getMembers().add(p.getUniqueId().toString());
                     main.Save();
                     return true;
@@ -108,7 +104,7 @@ public class gangs implements CommandExecutor {
                     main.SaveMember(kick_member);
                     main.Save();
                     kick.sendMessage(ChatColor.AQUA+"You Have been kicked from the Gang!");
-                    gang.SendMessageToClan(ChatColor.AQUA + kick.getName() + ChatColor.DARK_AQUA + " Has been Kicked from the gang!");
+                    gang.SendMessageToGang(ChatColor.AQUA + kick.getName() + ChatColor.DARK_AQUA + " Has been Kicked from the gang!",main);
                     return true;
                 }
                 else if (args[0].toLowerCase().equals("list")){
@@ -158,7 +154,7 @@ public class gangs implements CommandExecutor {
                 else if(args[0].toLowerCase().equals("setowner")){
                     Member member = main.GetMember(p);
                     if (member.getGang() == null){
-                        p.sendMessage(ChatColor.AQUA + "You need to be the Leader of a Clan to Invite People");
+                        p.sendMessage(ChatColor.AQUA + "You need to be the Leader of a Gang to Invite People");
                         return true;
                     }
 
@@ -171,12 +167,6 @@ public class gangs implements CommandExecutor {
                         p.sendMessage(ChatColor.DARK_AQUA + "Please add a valid member you want to invite /gang invite [player]");
                         return true;
                     }
-
-                    if (member.getGang().getMembers().size() >= member.getGang().MaxMembers()){
-                        p.sendMessage(ChatColor.DARK_AQUA + "You Have Reached the Max Gang Members, You can Upgrade this!");
-                        return true;
-                    }
-
 
 
                     Player newowner = Bukkit.getPlayer(args[1]);
@@ -220,8 +210,49 @@ public class gangs implements CommandExecutor {
                     if(gang.getUpgrades().containsKey("member")){
                         mesage.add(ChatColor.DARK_AQUA + "member_level:"+ChatColor.AQUA +gang.getUpgrades().get("member"));
                     }
+                    if(gang.getUpgrades().containsKey("ws")){
+                        mesage.add(ChatColor.DARK_AQUA + "ws:"+ChatColor.AQUA +gang.getUpgrades().get("ws"));
+                    }
                     mesage.add(ChatColor.DARK_AQUA + "Go /debug info [name] - to See Other Gangs info");
                     p.sendMessage(mesage.toArray(new String[mesage.size()]));
+                }
+                else if(args[0].toLowerCase().equals("gangspy")){
+                    if (main.getGangspy().contains(p)){
+                        main.getGangspy().remove(p);
+                        p.sendMessage(ChatColor.DARK_AQUA+"Removed your gang spy");
+                    }else {
+                        main.getGangspy().add(p);
+                        p.sendMessage(ChatColor.DARK_AQUA+"Added your gang spy");
+                    }
+                }
+                else if(args[0].toLowerCase().equals("setupgrades")){
+                    if (args.length < 3){
+                        p.sendMessage(ChatColor.DARK_AQUA+"/gangs setupgrades [upgrade] [amount]");
+                        return true;
+                    }
+
+                    Gang gang = main.GetMember(p).getGang();
+                    if (gang == null){
+                        p.sendMessage("You Must be in a Gang");
+                        return true;
+                    }
+                    gang.getUpgrades().put(args[1],Integer.valueOf(args[2]));
+                    main.Save();
+                }
+                else if(args[0].toLowerCase().equals("setABM")) {
+
+                    if (args.length < 2){
+                        p.sendMessage("Invalid format");
+                        return true;
+                    }
+
+                    Gang gang = main.GetMember(p).getGang();
+                    if (gang == null){
+                        p.sendMessage("You Must be in a Gang");
+                        return true;
+                    }
+                    gang.setAvaliableBlocksMined(Integer.valueOf(args[1]));
+                    main.Save();
                 }
             }
         }

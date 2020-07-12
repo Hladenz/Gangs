@@ -17,7 +17,7 @@ import java.util.Date;
 public class UpgradeGUI {
 
     public static void Open(Gangs main, Player p){
-        Inventory inv = Bukkit.createInventory(null, 27, ChatColor.DARK_AQUA + "Clans - Upgrades");
+        Inventory inv = Bukkit.createInventory(null, 27, ChatColor.DARK_AQUA + "Gangs - Upgrades");
 
         ItemStack[] Slots = new ItemStack[27];
 
@@ -32,31 +32,43 @@ public class UpgradeGUI {
         LBlue_Meta.setDisplayName("");
         Blue.setItemMeta(LBlue_Meta);
 
-        ItemStack ComingSoon = new ItemStack(Material.BEDROCK,1);
-        ItemMeta ComingSoon_meta = ComingSoon.getItemMeta();
-        ArrayList<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.DARK_RED + "COMING SOON");
-
-        ComingSoon_meta.setLore(lore);
-        ComingSoon_meta.setDisplayName(ChatColor.AQUA + "ComingSoon");
-        ComingSoon.setItemMeta(ComingSoon_meta);
-
         Gang gang = main.GetMember(p).getGang();
+
+        ItemStack WealthShare = new ItemStack(Material.EMERALD,1);
+        ItemMeta WealthShare_meta = WealthShare.getItemMeta();
+        ArrayList<String> lore = new ArrayList<String>();
+        lore.add(ChatColor.DARK_AQUA + "Gives a % of the Money you make");
+        lore.add(ChatColor.DARK_AQUA + "to your Team Mates!");
+
+        lore.add(ChatColor.DARK_AQUA +"COST:"+ChatColor.AQUA+gang.GetWScost(main));
+
+        WealthShare_meta.setLore(lore);
+        WealthShare_meta.setDisplayName(ChatColor.AQUA + "Wealth Share");
+        WealthShare.setItemMeta(WealthShare_meta);
+
+
 
         ItemStack MemberUpgrade = new ItemStack(Material.ARROW,1);
         ItemMeta MemberUpgrade_meta = MemberUpgrade.getItemMeta();
         lore = new ArrayList<String>();
         lore.add(ChatColor.DARK_AQUA + "Allow Another Person to Join Your Gang!");
-        if (!gang.getUpgrades().containsKey("member")){
-            lore.add(ChatColor.DARK_AQUA +"COST:"+ChatColor.AQUA+main.getConfig().getInt("upgrades.members.cost"));
-        }else{
-            lore.add(ChatColor.DARK_AQUA +"COST:"+ChatColor.AQUA+((main.getConfig().getInt("upgrades.members.cost"))*gang.getUpgrades().get("member")));
-        }
+
+
+        lore.add(ChatColor.DARK_AQUA +"COST:"+ChatColor.AQUA+gang.GetMemberCost(main));
 
         MemberUpgrade_meta.setLore(lore);
         MemberUpgrade_meta.setDisplayName(ChatColor.AQUA + "Member Upgrade");
         MemberUpgrade.setItemMeta(MemberUpgrade_meta);
 
+
+        ItemStack ComingSoon = new ItemStack(Material.BEDROCK,1);
+        ItemMeta ComingSoon_meta = ComingSoon.getItemMeta();
+        lore = new ArrayList<String>();
+        lore.add(ChatColor.DARK_RED + "COMING SOON");
+
+        ComingSoon_meta.setLore(lore);
+        ComingSoon_meta.setDisplayName(ChatColor.AQUA + "ComingSoon");
+        ComingSoon.setItemMeta(ComingSoon_meta);
 
         Slots[0] = Blue;
         Slots[1] = Blue;
@@ -70,7 +82,7 @@ public class UpgradeGUI {
 
         Slots[9] = Blue;
         Slots[10] = LBlue;
-        Slots[11] = ComingSoon;
+        Slots[11] = WealthShare;
         Slots[12] = LBlue;
         Slots[13] = MemberUpgrade;
         Slots[14] = LBlue;

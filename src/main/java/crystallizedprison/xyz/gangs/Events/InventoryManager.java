@@ -31,7 +31,7 @@ public class InventoryManager implements Listener {
 
     @EventHandler(ignoreCancelled = true)
     public void onInventoryInteract(InventoryClickEvent event) {
-        if (event.getInventory().getTitle().contains("Clans -")){
+        if (event.getInventory().getTitle().contains("Gangs -")){
             event.setCancelled(true);
             if (event.getInventory().getTitle().contains("Main menu")){
                 ItemStack clicked = event.getCurrentItem();
@@ -68,7 +68,7 @@ public class InventoryManager implements Listener {
                     if (kick.isOnline()) {
                         kick.sendMessage(ChatColor.AQUA + "You Have been kicked from the Gang!");
                     }
-                    gang.SendMessageToClan(ChatColor.AQUA + kick.getName() + ChatColor.DARK_AQUA + " Has been Kicked from the gang!");
+                    gang.SendMessageToGang(ChatColor.AQUA + kick.getName() + ChatColor.DARK_AQUA + " Has been Kicked from the gang!",main);
                 }
             }
             else if (event.getInventory().getTitle().contains("Upgrades")){
@@ -79,11 +79,7 @@ public class InventoryManager implements Listener {
                     int cost = 0;
                     Gang gang = main.GetMember(player).getGang();
 
-                    if (!gang.getUpgrades().containsKey("member")){
-                        cost =main.getConfig().getInt("upgrades.members.cost");
-                    }else{
-                        cost = (main.getConfig().getInt("upgrades.members.cost"))*gang.getUpgrades().get("member");
-                    }
+                    cost = gang.GetMemberCost(main);
 
                     if (gang.getAvaliableBlocksMined() < cost){
                         player.closeInventory();
@@ -98,7 +94,37 @@ public class InventoryManager implements Listener {
                         gang.getUpgrades().put("member",gang.getUpgrades().get("member")+1);
                     }
                     main.Save();
-                    gang.SendMessageToClan(ChatColor.BOLD+""+ChatColor.AQUA+"Member Capacity Upgrade has just been Upgraded to " + gang.getUpgrades().get("member"));
+                    gang.SendMessageToGang(ChatColor.BOLD+""+ChatColor.AQUA+"Member Capacity Upgrade has just been Upgraded to " + gang.getUpgrades().get("member"),main);
+                }
+                else if (clicked.getType().equals(Material.EMERALD)){
+                    int cost = 0;
+                    Gang gang = main.GetMember(player).getGang();
+
+                    if (!gang.getUpgrades().containsKey("ws")){
+
+                        cost =gang.GetWScost(main);
+                    }else{
+                        if (gang.getUpgrades().get("ws") == 15){
+                            player.sendMessage(ChatColor.DARK_AQUA +"You have the max level of Wealth Share");
+                            return;
+                        }
+                        cost = gang.GetWScost(main);
+                    }
+
+                    if (gang.getAvaliableBlocksMined() < cost){
+                        player.closeInventory();
+                        player.sendMessage(ChatColor.DARK_AQUA +"You Need " + cost + " Blocks Mined Available");
+                        return;
+                    }
+
+                    gang.setAvaliableBlocksMined(gang.getAvaliableBlocksMined()-cost);
+                    if (!gang.getUpgrades().containsKey("ws")){
+                        gang.getUpgrades().put("ws",1);
+                    }else{
+                        gang.getUpgrades().put("ws",gang.getUpgrades().get("ws")+1);
+                    }
+                    main.Save();
+                    gang.SendMessageToGang(ChatColor.BOLD+""+ChatColor.AQUA+"Wealth Share Upgrade has just been Upgraded to " + gang.getUpgrades().get("ws"),main);
                 }
             }
         }

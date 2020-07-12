@@ -18,7 +18,7 @@ public class MemberGUI {
 
 
     public static void Open(Gangs main, Player p){
-        Inventory inv = Bukkit.createInventory(null, 27, ChatColor.DARK_AQUA + "Clans - Member Gui");
+        Inventory inv = Bukkit.createInventory(null, 27, ChatColor.DARK_AQUA + "Gangs - Member Gui");
 
         ItemStack[] Slots = new ItemStack[27];
 

@@ -80,7 +80,6 @@ public class papi extends PlaceholderExpansion {
         if(identifier.equals("tag")){
 
             if (Main.GetMember(player.getPlayer()).getGang() != null){
-                System.out.println("Returning PlaceHolder There in gang");
                 return ChatColor.BLACK  + "["+ChatColor.RESET + Main.GetMember(player.getPlayer()).getGang().getTag()+ChatColor.BLACK + "]";
             }
 

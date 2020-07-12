@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class MainMenu {
 
     public static void Open(Gangs main, Player p){
-        Inventory inv = Bukkit.createInventory(null, 27, ChatColor.DARK_AQUA + "Clans - Main menu");
+        Inventory inv = Bukkit.createInventory(null, 27, ChatColor.DARK_AQUA + "Gangs - Main menu");
 
         ItemStack[] Slots = new ItemStack[27];
 
@@ -33,7 +33,7 @@ public class MainMenu {
         ItemStack MemeberList = new ItemStack(Material.BOOK,1);
         ItemMeta MemeberList_META = MemeberList.getItemMeta();
         ArrayList<String> lore = new ArrayList<String>();
-        lore.add(ChatColor.DARK_AQUA + "See Clan Members");
+        lore.add(ChatColor.DARK_AQUA + "See Gang Members");
 
         MemeberList_META.setLore(lore);
         MemeberList_META.setDisplayName(ChatColor.AQUA + "Member list");
@@ -71,14 +71,14 @@ public class MainMenu {
         Stats_meta.setDisplayName(ChatColor.AQUA + "Stats");
         Stats.setItemMeta(Stats_meta);
 
-        ItemStack ClanSettings = new ItemStack(Material.WRITABLE_BOOK,1);
-        ItemMeta ClanSettings_meta = ClanSettings.getItemMeta();
+        ItemStack GangSettings = new ItemStack(Material.WRITABLE_BOOK,1);
+        ItemMeta GangSettings_meta = GangSettings.getItemMeta();
         lore = new ArrayList<String>();
         lore.add(ChatColor.DARK_RED + "COMING SOON");
 
-        ClanSettings_meta.setLore(lore);
-        ClanSettings_meta.setDisplayName(ChatColor.AQUA + "ClanSettings");
-        ClanSettings.setItemMeta(ClanSettings_meta);
+        GangSettings_meta.setLore(lore);
+        GangSettings_meta.setDisplayName(ChatColor.AQUA + "GangSettings");
+        GangSettings.setItemMeta(GangSettings_meta);
         
         Slots[0] = Blue;
         Slots[1] = Blue;
@@ -96,7 +96,7 @@ public class MainMenu {
         Slots[12] = Upgrades;
         Slots[13] = LeaderBoards;
         Slots[14] = Stats;
-        Slots[15] = ClanSettings;
+        Slots[15] = GangSettings;
         Slots[16] = Blue;
         Slots[17] = Blue;
 

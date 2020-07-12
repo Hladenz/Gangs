@@ -34,7 +34,7 @@ public class gangchat implements CommandExecutor {
                 return true;
             }
 
-            member.getGang().SendMessageToClan(ChatColor.AQUA + p.getName() +ChatColor.DARK_AQUA +":"+String.join(" ",args));
+            member.getGang().SendMessageToGang(ChatColor.AQUA + p.getName() +ChatColor.DARK_AQUA +":"+String.join(" ",args),main);
 
         }
 

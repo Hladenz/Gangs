@@ -7,13 +7,19 @@ import crystallizedprison.xyz.gangs.ConfigHandlers.GangsConfig;
 import crystallizedprison.xyz.gangs.ConfigHandlers.MemberConfig;
 import crystallizedprison.xyz.gangs.Events.InventoryManager;
 import crystallizedprison.xyz.gangs.Intergrations.papi;
+import crystallizedprison.xyz.gangs.wealthshare.Autosell;
+import crystallizedprison.xyz.gangs.wealthshare.OnSellEvent;
 import me.clip.ezblocks.EZBlocks;
+import net.milkbowl.vault.economy.Economy;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitScheduler;
+import xyz.crystallizedprison.petssystem.PetsSystem;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +32,9 @@ public final class Gangs extends JavaPlugin {
 
     private List<Gang> gangs = new ArrayList<>();
     private List<Player> gcEnabled = new ArrayList<>();
+    private List<Player> gangspy = new ArrayList<>();
+
+    PetsSystem petsSystem;
 
     public MemberConfig getMemberConfig() {
         return memberConfig;
@@ -39,6 +48,40 @@ public final class Gangs extends JavaPlugin {
         return gangsConfig;
     }
 
+    private static Economy econ = null;
+
+    public static Economy getEcon() {
+        return econ;
+    }
+
+    public List<Player> getGangspy() {
+        return gangspy;
+    }
+
+    public void setGangspy(List<Player> gangspy) {
+        this.gangspy = gangspy;
+    }
+
+    private boolean setupEconomy() {
+        if (getServer().getPluginManager().getPlugin("Vault") == null) {
+            return false;
+        }
+        RegisteredServiceProvider<Economy> rsp = getServer().getServicesManager().getRegistration(Economy.class);
+        if (rsp == null) {
+            return false;
+        }
+        econ = rsp.getProvider();
+        return econ != null;
+    }
+
+
+    public PetsSystem getPets() {
+        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("PetsSystem");
+        if ((plugin == null)) {
+            return null;
+        }
+        return (xyz.crystallizedprison.petssystem.PetsSystem)plugin;
+    }
 
     @Override
     public void onEnable() {
@@ -50,6 +93,11 @@ public final class Gangs extends JavaPlugin {
         memberConfig.setup();
         memberConfig.get().addDefault("members",null);
 
+        if (!setupEconomy() ) {
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+
         getConfig().options().copyDefaults();
         saveDefaultConfig();
 
@@ -58,8 +106,12 @@ public final class Gangs extends JavaPlugin {
         getCommand("GangChat").setExecutor(new gangchat(this));
 
         getServer().getPluginManager().registerEvents(new InventoryManager(this), this);
+        getServer().getPluginManager().registerEvents(new OnSellEvent(this), this);
+        getServer().getPluginManager().registerEvents(new Autosell(this), this);
 
         Load();
+
+        petsSystem=getPets();
 
         if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
             /*
@@ -160,6 +212,10 @@ public final class Gangs extends JavaPlugin {
         return null;
     }
 
+    public PetsSystem getPetsSystem() {
+        return petsSystem;
+    }
+
     public Gang GetGangByTag(String tag){
 
         for (Gang gang:gangs){
@@ -217,13 +273,13 @@ public final class Gangs extends JavaPlugin {
                             int toadd = EZBlocks.getEZBlocks().getBlocksBroken(p)- member.getRedeemed();
 
                             if (gang.getBlocksMinedContributed().containsKey(p.getUniqueId().toString())){
-                                System.out.println("Adding1:"+toadd);
                                 gang.getBlocksMinedContributed().put(p.getUniqueId().toString(),gang.getBlocksMinedContributed().get(p.getUniqueId().toString())+toadd);
                             }else {
-                                System.out.println("Adding2:"+toadd);
                                 gang.getBlocksMinedContributed().put(p.getUniqueId().toString(), toadd);
                             }
-                            gang.setAvaliableBlocksMined(gang.getAvaliableBlocksMined()+toadd);
+                            int NewTotal = Integer.sum(gang.getAvaliableBlocksMined(),toadd);
+                            NewTotal = Math.abs(NewTotal);
+                            gang.setAvaliableBlocksMined(NewTotal);
                             member.setRedeemed(EZBlocks.getEZBlocks().getBlocksBroken(p));
                             SaveMember(member);
                             Save();
